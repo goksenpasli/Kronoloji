@@ -1,0 +1,53 @@
+﻿<Window x:Class="Kronoloji.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ComponentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+    xmlns:Ext="clr-namespace:Extensions;assembly=Extensions"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:Kronoloji"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="Kronoloji"
+    Width="800" Height="450"
+    d:DataContext="{d:DesignInstance Type={x:Type local:ViewModel}}"
+    UseLayoutRounding="True" WindowStartupLocation="CenterScreen" WindowState="Maximized"
+    mc:Ignorable="d">
+    <Window.Resources>
+        <local:DataImageFilePathImageUriConverter x:Key="DataImageFilePathImageUriConverter" />
+        <CollectionViewSource x:Key="Cvs" IsLiveSortingRequested="True" Source="{Binding Veriler.Veri}">
+            <CollectionViewSource.SortDescriptions>
+                <ComponentModel:SortDescription Direction="Ascending" PropertyName="Tarih" />
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <UniformGrid Columns="2">
+            <TextBox Text="{Binding Veri.Açıklama, UpdateSourceTrigger=PropertyChanged}" />
+            <Button Content="RESİM EKLE" Command="{Binding ResimEkle, Mode=OneWay}" />
+            <DatePicker VerticalAlignment="Center" SelectedDate="{Binding Veri.Tarih}" />
+            <Button Content="EKLE" Command="{Binding Ekle, Mode=OneWay}" />
+        </UniformGrid>
+        <Ext:HorizontalListBox Grid.Row="1" ItemsSource="{Binding Mode=OneWay, Source={StaticResource Cvs}}" VirtualizingPanel.VirtualizationMode="Recycling">
+            <Ext:HorizontalListBox.ItemTemplate>
+                <DataTemplate>
+                    <Viewbox>
+                        <StackPanel>
+                            <TextBlock Text="{Binding Açıklama}"
+                                Foreground="Red"
+                                HorizontalAlignment="Center"
+                                FontSize="18" />
+                            <TextBlock Text="{Binding Tarih}"
+                                Foreground="Blue"
+                                HorizontalAlignment="Center"
+                                FontSize="18"
+                                Language="tr-tr" />
+                            <Image Source="{Binding Resim, Converter={StaticResource DataImageFilePathImageUriConverter}, ConverterParameter='600'}" />
+                        </StackPanel>
+                    </Viewbox>
+                </DataTemplate>
+            </Ext:HorizontalListBox.ItemTemplate>
+        </Ext:HorizontalListBox>
+    </Grid>
+</Window>
